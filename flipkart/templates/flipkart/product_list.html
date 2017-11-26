@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pagination Products</title>
+</head>
+<body>
+	<p>List of products:-</p><br><hr><br>
+	<table class="table" border="2">
+		<thead>
+			<tr>
+				<th>SKU</th>
+				<th>Product Name</th>
+				<th> MRP </th>
+				<th>Selling Price</th>
+				<th>Description</th>
+				<th>Image</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for product in prods %}
+			<tr>
+				<td><a href="{{product.sku}}">{{product.sku}}</a></td>
+				<td>{{product.item_name}}</td>
+				<td>{{product.mrp}}</td>
+				<td>{{product.sp}}</td>
+				<td>{{product.description}}</td>
+				<td><img src="{{product.img.url}}" height="80" width="80"></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	{% if prods.has_other_pages%}
+	<ul class="pagination">
+		{% if prods.has_previous %}
+			<li><a href="?q={{prods.previous_page_number}}">&laquo;</a></li>
+		{% else %}
+			<li class="disabled"><span>&laquo;</span></li>
+		{% endif %}
+
+		{% for i in prods.paginator.page_range %}
+			{% if prods.number == i %}
+				<li class="active"><span>{{i}} (current)</span></li>
+			{% else %}
+				<li><a href="?q={{i}}">{{i}}</a></li>
+			{% endif %}
+		{% endfor %}
+
+		{% if prods.has_next %}
+			<li><a href="?q={{prods.next_page_number}}">&raquo;</a></li>
+		{% else %}
+			<li class="disabled"><span>&raquo;</span></li>
+		{% endif %}
+	</ul>
+	{% endif %}
+</body>
+</html>

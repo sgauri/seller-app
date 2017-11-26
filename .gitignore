@@ -1,0 +1,7 @@
+*.pyc
+*~
+__pycache__
+envtest
+/static
+.DS_Store
+mysql

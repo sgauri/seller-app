@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Search Product</title>
+</head>
+<body>
+<!-- 	<form action="" method="get">
+		<h2>Search with product name</h2>
+		<input type="text" name="q">
+		<input type="submit" value="Search">
+	</form> -->
+<br>
+<hr>
+<hr>
+<h2>Products Detail</h2>
+
+<!-- 	<table border="2">
+		<thead>
+			<tr>
+				<th>SKU</th>
+				<th>Product Name</th>
+				<th>Selling Price</th>
+				<th>Image</th>
+			</tr>
+		</thead>
+		<tbody> -->
+{% for product in items %}
+	<li><span>Product SKU: </span>{{ product.sku }}</li>
+	<li>{{product.item_name}}</li>
+	<li>{{product.sp}}</li>
+	<li>{{product.description}}</li>
+	<li><a href="{{product.img.url}}"><img src="{{product.img.url}}" height="80" width="80"></a></li>
+{% endfor %}
+</body>
+</html>
