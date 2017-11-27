@@ -50,3 +50,7 @@ class Palazzo(models.Model):
 		return '<a href="{0}"><img src="{0}" height="80" width="80"></a>'.format(self.img.url)
 	image_pal.allow_tags = True
 	image_pal.short_description = "p-image"
+
+class Images(models.Model):
+	sku = models.ForeignKey(Palazzo, on_delete = models.CASCADE)
+	imgs = models.ImageField(upload_to='palazzo_img')
