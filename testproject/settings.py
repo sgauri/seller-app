@@ -113,7 +113,7 @@ LOGGING = {
 		'console' : {
 			'class' : 'logging.StreamHandler',
 			'formatter' : 'verbose',
-		}
+		},
 		# 'file': {
 		# 	'level': 'DEBUG',
 		# 	'class': 'logging.FileHandler',
@@ -135,5 +135,5 @@ LOGGING = {
 	'root' : {
 		'handlers' : ['console'],
 		'level' : 'ERROR',
-	}
+	},
 }

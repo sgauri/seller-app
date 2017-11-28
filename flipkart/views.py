@@ -14,7 +14,7 @@ import logging
 def all_products(request):
 	product_list = Palazzo.objects.all().order_by("sku")
 	page = request.GET.get('q', 1)
-	paginator = Paginator(product_list, 5)
+	paginator = Paginator(product_list, 4)
 	try:
 		prods = paginator.page(page)
 	except PageNotAnInteger:
@@ -38,13 +38,15 @@ def uploadcsv(request):
 		if csv_file.multiple_chunks():
 			messages.error(request,"Uploaded file is too big (%.2f MB)." % (csv_file.size/(1000*1000),))
 			return HttpResponseRedirect(reverse("flipkart:upload_csv"))
- 
-		file_data = csv_file.read().decode("utf-8")
- 
-		lines = file_data.split("\n")
-		#loop over the lines and save them in db. If error , store as string and then display
-		for line in lines:
-			fields = line.split(",")
+
+	# with open(csv_file, "rb") as file_data:
+		file_data = csv.reader(csv_file)
+		next(file_data, None)
+	# file_data = open(csv_file1, "r")
+	# lines = file_data.split("\n")
+	# #loop over the lines and save them in db. If error , store as string and then display
+		for fields in file_data:
+			# fields = line.split(",")
 			data_dict = {}
 			data_dict["sku"] = fields[0]
 			data_dict["item_name"] = fields[1]
