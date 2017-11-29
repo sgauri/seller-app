@@ -11,7 +11,7 @@ class ImagesInline(admin.StackedInline):
 
 class PalazzoAdmin(admin.ModelAdmin):
 	list_display = ('sku', 'item_name', 'color', 'qty', 'size', 'image_pal')
-	search_fields = ('item_name',)
+	search_fields = ('item_name', 'sku')
 	inlines = [ImagesInline]
 
 

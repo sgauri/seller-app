@@ -41,7 +41,7 @@ class Palazzo(models.Model):
 	size = models.CharField(max_length=10, choices=SIZE_CHOICES, default='M')
 	key_feature1 = models.CharField(max_length=50, default='Wide Leg Pants')
 	key_feature2 = models.CharField(max_length=50, default='Single Side Pocket')
-	img = models.ImageField(upload_to='palazzo_img', null=True, blank=True, default="/palazzo_img/optimus.jpg")
+	img = models.ImageField(upload_to='palazzo_img', null=True, blank=True, default="palazzo_img/optimus.jpg")
 
 	def __str__(self):
 		return self.item_name
@@ -54,3 +54,6 @@ class Palazzo(models.Model):
 class Images(models.Model):
 	sku = models.ForeignKey(Palazzo, on_delete = models.CASCADE)
 	imgs = models.ImageField(upload_to='palazzo_img')
+
+
+	

@@ -1,11 +1,32 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Pagination Products</title>
+	<style>
+		li {
+			float : left;
+			padding: 16px;
+		}
+		ul {
+			list-style-type: none;
+		}
+	</style>
 </head>
+
 <body>
-	<p>List of products:-</p><br><hr><br>
-	<table class="table" border="2">
+	<p>List of products:-</p><hr>
+	<a href="upload/csv/"><p align="right">Add new products</p></a>
+	
+	<form action="" method="get">
+		<h3>Search product</h3>
+		<input type="text" name="q1" placeholder="search with product name">
+		<input type="submit" value="Search">
+	</form>
+	
+	<hr>
+
+	<table class="table table-bordered" border="2">
 		<thead>
 			<tr>
 				<th>SKU</th>
@@ -20,19 +41,19 @@
 		<tbody>
 			{% for product in prods %}
 			<tr>
-				<td><a href="{{product.sku}}">{{product.sku}}</a></td>
+				<td>{{product.sku}}</td>
 				<td>{{product.item_name}}</td>
 				<td>{{product.mrp}}</td>
 				<td>{{product.sp}}</td>
 				<td>{{product.description}}</td>
-				<td><img src="{{product.img.url}}" height="80" width="80"></td>
+				<td><a href="{{product.img.url}}"><img src="{{product.img.url}}" height="80" width="80"></a></td>
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 
 	{% if prods.has_other_pages%}
-	<ul class="pagination">
+	<ul id="row_page" class="pagination">
 		{% if prods.has_previous %}
 			<li><a href="?q={{prods.previous_page_number}}">&laquo;</a></li>
 		{% else %}
@@ -41,7 +62,7 @@
 
 		{% for i in prods.paginator.page_range %}
 			{% if prods.number == i %}
-				<li class="active"><span>{{i}} (current)</span></li>
+				<li class="active"><span>{{i}}</span></li>
 			{% else %}
 				<li><a href="?q={{i}}">{{i}}</a></li>
 			{% endif %}

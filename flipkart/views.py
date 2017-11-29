@@ -6,23 +6,34 @@ from .models import Palazzo
 from .forms import PalazzoForm
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-import csv
 from django.contrib import messages
+from django.conf import settings
+
+import os
+import csv
 import logging
+import requests
+import shutil
+import wget
+import urllib
 
 
 def all_products(request):
-	product_list = Palazzo.objects.all().order_by("sku")
-	page = request.GET.get('q', 1)
-	paginator = Paginator(product_list, 4)
-	try:
-		prods = paginator.page(page)
-	except PageNotAnInteger:
-		prods = paginator.page(1)
-	except EmptyPage:
-		prods = paginator.page(paginator.num_pages)
-	return render(request, 'flipkart/product_list.html', {'prods':prods})
-
+	if 'q1' in request.GET and request.GET['q1']:
+		q1 = request.GET['q1']
+		items = Palazzo.objects.filter(item_name__icontains=q1).order_by('sku')
+		return render(request, 'flipkart/product_search.html', {'items':items})
+	else:
+		product_list = Palazzo.objects.all().order_by("-sku")
+		page = request.GET.get('q', 1)
+		paginator = Paginator(product_list, 4)
+		try:
+			prods = paginator.page(page)
+		except PageNotAnInteger:
+			prods = paginator.page(1)
+		except EmptyPage:
+			prods = paginator.page(paginator.num_pages)
+		return render(request, 'flipkart/product_list.html', {'prods':prods})
 
 def uploadcsv(request):
 	data = {}
@@ -39,12 +50,10 @@ def uploadcsv(request):
 			messages.error(request,"Uploaded file is too big (%.2f MB)." % (csv_file.size/(1000*1000),))
 			return HttpResponseRedirect(reverse("flipkart:upload_csv"))
 
-	# with open(csv_file, "rb") as file_data:
+# #loop over the lines and save them in db. If error , store as string and then display
 		file_data = csv.reader(csv_file)
 		next(file_data, None)
-	# file_data = open(csv_file1, "r")
-	# lines = file_data.split("\n")
-	# #loop over the lines and save them in db. If error , store as string and then display
+		k = 0
 		for fields in file_data:
 			# fields = line.split(",")
 			data_dict = {}
@@ -62,7 +71,20 @@ def uploadcsv(request):
 			data_dict["size"] = fields[11]
 			data_dict["key_feature1"] = fields[12]
 			data_dict["key_feature2"] = fields[13]
-			data_dict["img"] = fields[14]
+			# data_dict["img"] = fields[14]
+
+# part to check for image uploading
+
+			if fields[14] != "" and fields[14] != "\n":
+				filename = fields[0][:8] + "_" + str(k) + ".jpeg"
+				filepath = os.path.join("/home/optimus/testproject/media/palazzo_img", filename)
+				data_dict["img"] = urllib.urlretrieve(fields[14], filepath)
+				k += 1
+			else:
+				data_dict["img"] = fields[14]
+
+# part to check for image uploading
+
 			try:
 				form = PalazzoForm(data_dict)
 				if form.is_valid():
@@ -80,6 +102,72 @@ def uploadcsv(request):
 	return HttpResponseRedirect(reverse("flipkart:upload_csv"))
 
 
+# URLopener is also downloading corrupt images
+
+			# filename = fields[0][:8] + "_" + str(k) + ".JPG"
+			# filepath = os.path.join("/home/optimus/testproject/media/palazzo_img", filename)
+
+			# testfile = urllib.URLopener()
+			# data_dict["img"] = testfile.retrieve(fields[14], filepath)
+			# k += 1
+
+# URLopener is also downloading corrupt images
+
+
+### wget method is also not working ###
+
+			# filename = fields[0][:8] + "_" + str(k) + ".JPG"
+			# filepath = os.path.join("/home/optimus/testproject/media/palazzo_img", filename)
+			# wget.download(fields[14], filepath)
+			# data_dict['img'] = filepath
+			# k += 1
+
+### wget method is also not working ###
+
+
+# image downloading with requests is also not working (image property are not loading)#
+
+			# filename = fields[0][:8] + "_" + str(k) + ".JPG"
+			# filepath = os.path.join("/home/optimus/testproject/media/palazzo_img", filename)
+			# response = requests.get(fields[14])
+			# if response.status_code == 200:
+			# 	with open(filepath, "wb") as f:
+			# 		data_dict["img"] = f.write(response.content)
+			# 		k = k+1
+			# else:
+			# 	data_dict["img"] = fields[14]
+
+# image downloading with requests is also not working (image property are not loading)#
+
+
+# StackOverflow Method is not loading image request and shutil used #
+
+			# filename = fields[0][:8] + "_" + str(k) + ".JPG"
+			# filepath = os.path.join("/home/optimus/testproject/media/palazzo_img", filename)
+			# response = requests.get(fields[14], stream = True)
+			# # if response.status_code == 200:
+			# with open(filepath, 'wb') as f:
+			# 	# r.raw.decode_content = True
+			# 	data_dict["img"] = shutil.copyfileobj(response.raw, f)
+			# 	k += 1
+			# del response
+			# # else:
+			# # 	data_dict["img"] = fields[14]
+
+# StackOverflow Method is not loading image request and shutil used #
+
+
+# urllib and urlretriever method #
+
+			# if fields[14] != "" and fields[14] != "\n":
+			# 	filename = fields[0][:8] + "_" + str(k) + ".jpeg"
+			# 	filepath = os.path.join("/home/optimus/testproject/media/palazzo_img", filename)
+			# 	data_dict["img"] = urllib.urlretrieve(fields[14], filepath)
+			# 	k += 1
+			# else:
+			# 	data_dict["img"] = fields[14]
+
+# urllib and urlretriever method #
 
 ### my attempt to check why post method is converting to get automatically ###
 
