@@ -21,6 +21,7 @@ INSTALLED_APPS = [
 	'django.contrib.sites',
 	'photologue',
 	'sortedm2m',
+	'import_export',
 ]
 
 SITE_ID = 1
@@ -137,3 +138,5 @@ LOGGING = {
 		'level' : 'ERROR',
 	},
 }
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

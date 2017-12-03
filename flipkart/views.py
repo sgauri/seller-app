@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.conf import settings
+from .resources import PalazzoResource
 
 import os
 import csv
@@ -295,3 +296,10 @@ def uploadcsv(request):
 	# return HttpResponseRedirect('/admin')
 
 ### my method to attempt to change the code on my own but it was unsuccessful ###
+
+# def export(request):
+# 	palazzo_resource = PalazzoResource()
+# 	dataset = palazzo_resource.export()
+# 	response = HttpResponse(dataset.csv, content_type = 'text/csv')
+# 	response['Content-Disposition'] = 'attachment; filename="palazzo_1.csv"'
+# 	return response
